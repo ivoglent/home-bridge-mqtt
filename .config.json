@@ -1,0 +1,35 @@
+{
+  "platforms": [
+    {
+      "name": "homebridge-mqtt",
+      "platform": "HomebridgeMQTT",
+      "connection": {
+        "host": "home.quangiaso.com",
+        "port": 1883,
+        "clientId": "ClientID",
+        "username": "username",
+        "password": "password"
+      },
+      "home": {
+        "id": 1,
+        "uuid": "uuid",
+        "devices": [
+          {
+            "name": "name",
+            "id": 12,
+            "uuid": "",
+            "nodes": [
+              {
+                "type": "switch",
+                "id": 1,
+                "onTopic": "",
+                "offTopic": "",
+                "stateTopic": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
