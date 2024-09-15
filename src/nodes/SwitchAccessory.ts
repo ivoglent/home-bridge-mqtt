@@ -80,8 +80,8 @@ export class SwitchAccessory {
     }
 
     listenState(): void {
-        this.mqttClient.subscribe(this.config.stateTopic, (message: StateMessage) => {
-            this.state.On = message.state == "ON";
+        this.mqttClient.subscribe(this.config.stateTopic, (message: string) => {
+            this.state.On = message == "1";
         })
     }
 }
