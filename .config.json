@@ -8,7 +8,8 @@
         "port": 1883,
         "clientId": "ClientID",
         "username": "username",
-        "password": "password"
+        "password": "password",
+        "api": "http://localhost:8080"
       },
       "home": {
         "id": 1,
