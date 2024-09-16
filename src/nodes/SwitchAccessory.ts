@@ -1,4 +1,11 @@
-import {Characteristic, CharacteristicValue, PlatformAccessory, Service} from "homebridge";
+import {
+    Characteristic,
+    CharacteristicGetHandler,
+    CharacteristicValue,
+    Logger,
+    PlatformAccessory,
+    Service
+} from "homebridge";
 import {MqttHomebridgePlatform} from "../platform";
 import {MqttClient} from "mqtt";
 import {NodeConfig} from "../settings";
@@ -18,6 +25,7 @@ export class SwitchAccessory {
 
     constructor(
         private readonly platform: MqttHomebridgePlatform,
+        private readonly log: Logger,
         private readonly accessory: PlatformAccessory,
         private readonly config: NodeConfig,
         private readonly mqttClient: HandledMqttClient
@@ -46,6 +54,9 @@ export class SwitchAccessory {
             .onGet(this.getOn.bind(this));               // GET - bind to the `getOn` method below
 
         this.listenState();
+        this.log.info("Restore state of: %s to :%s", this.config.name, this.config.state);
+        this.service.getCharacteristic(this.platform.Characteristic.On).updateValue(this.config.state);
+        this.state.On = this.config.state;
     }
 
     /**
@@ -53,13 +64,12 @@ export class SwitchAccessory {
      * These are sent when the user changes the state of an accessory, for example, turning on a Light bulb.
      */
     async setOn(value: CharacteristicValue) {
-        this.platform.log.info("setOn method called: ", value);
-        if (value) {
+        if (value as boolean) {
             this.mqttClient.publish(this.config.onTopic, "{}");
         } else {
             this.mqttClient.publish(this.config.offTopic, "{}");
         }
-        this.platform.log.info('Set {} On -> {}', this.config.name, value);
+        this.log.info('Set %s On -> %s', this.config.name, value);
     }
 
     /**
@@ -76,13 +86,15 @@ export class SwitchAccessory {
      * this.service.updateCharacteristic(this.platform.Characteristic.On, true)
      */
     async getOn(): Promise<CharacteristicValue> {
+        this.log.info(`Getting switch state ${this.config.name} = ${this.state.On}`);
         return this.state.On;
     }
 
     listenState(): void {
         this.mqttClient.subscribe(this.config.stateTopic, (message: string) => {
-            this.platform.log.info("State of %s changed to: %s", this.config.name, message)
             this.state.On = message == "1";
+            this.service.getCharacteristic(this.platform.Characteristic.On).updateValue(this.state.On);
+            this.log.info("State of %s changed to: %s", this.config.name, this.state.On);
         })
     }
 }

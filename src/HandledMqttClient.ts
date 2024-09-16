@@ -34,30 +34,26 @@ export class HandledMqttClient {
 
     }
 
-    onMessage(topic, message): void {
+    onMessage(topic: string | number, message: any): void {
         if (this.callbacks[topic]) {
-            this.callbacks[topic].forEach((callback) => {
-                callback(message);
-            });
+            this.log.info("Calling back topic: %s with message: %s", topic, message);
+            this.callbacks[topic](message);
         } else {
             this.log.warn("No subscriber for topic: {}", topic);
         }
     }
 
     subscribe(topic: string, callback: Function): boolean {
-        if (!this.callbacks[topic]) {
-            this.callbacks[topic] = [];
-        }
         this.mqttClient.subscribe(topic, () => {
             this.log.info("Subscribed topic:", topic);
-            this.callbacks[topic].push(callback);
+            this.callbacks[topic] = (callback);
         });
         return true;
     }
 
     publish(topic: string, message: any) {
         let payload = message instanceof Object ? JSON.stringify(message) : message;
-        this.log.info("Publishing message {} to topic {}", message, topic);
+        this.log.info("Publishing message %s to topic %s", message, topic);
         this.mqttClient.publish(topic, payload);
     }
 }

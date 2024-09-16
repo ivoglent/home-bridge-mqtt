@@ -1,7 +1,5 @@
 import { API, DynamicPlatformPlugin, Logger, PlatformAccessory, PlatformConfig, Service, Characteristic } from 'homebridge';
-import {connect, MqttClient} from "mqtt"
 import {MqttPlatformConfig, NodeConfig, PLATFORM_NAME, PLUGIN_NAME} from './settings';
-import { ExamplePlatformAccessory } from './platformAccessory';
 import {HandledMqttClient} from "./HandledMqttClient";
 import {HomeIntegration} from "./HomeIntegration";
 import {SwitchAccessory} from "./nodes/SwitchAccessory";
@@ -115,7 +113,7 @@ export class MqttHomebridgePlatform implements DynamicPlatformPlugin {
           const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid);
           if (existingAccessory) {
             this.log.info('Restoring existing accessory from cache:', existingAccessory.displayName);
-            new SwitchAccessory(this, existingAccessory, nodeConfig, this.handledMqtt);
+            new SwitchAccessory(this, this.log, existingAccessory, nodeConfig, this.handledMqtt);
           } else {
             // the accessory does not yet exist, so we need to create it
             this.log.info('Adding new accessory:', nodeConfig.name);
@@ -124,7 +122,7 @@ export class MqttHomebridgePlatform implements DynamicPlatformPlugin {
 
             // create the accessory handler for the newly create accessory
             // this is imported from `platformAccessory.ts`
-            new SwitchAccessory(this, accessory, nodeConfig, this.handledMqtt);
+            new SwitchAccessory(this, this.log, accessory, nodeConfig, this.handledMqtt);
             // link the accessory to your platform
             this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
           }

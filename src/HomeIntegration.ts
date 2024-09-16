@@ -10,18 +10,22 @@ export class HomeIntegration {
     async getNodes(): Promise<NodeConfig[]> {
         return new Promise<NodeConfig[]>((async (resolve) => {
             const api = "http://" + this.address + ":" + this.port + "/bridge/sync-nodes?token=";
-            let response = await fetch(api);
-            if ((response).ok) {
-                let result: HttpResponse<NodeConfig[]> = await response.json() as HttpResponse<NodeConfig[]>;
-                if (result && result.success) {
-                    resolve(result.data);
+            try {
+                let response = await fetch(api);
+                if ((response).ok) {
+                    let result: HttpResponse<NodeConfig[]> = await response.json() as HttpResponse<NodeConfig[]>;
+                    if (result && result.success) {
+                        resolve(result.data);
+                    } else {
+                        this.log.error("Failed to load node list");
+                        resolve([]);
+                    }
                 } else {
-                    this.log.error("Failed to load node list");
+                    this.log.error("Failed to load node list: ", response.status);
                     resolve([]);
                 }
-            } else {
-                this.log.error("Failed to load node list: ", response.status);
-                resolve([]);
+            } catch (e) {
+                this.log.error("Failed to load node list: ", e);
             }
         }))
     }

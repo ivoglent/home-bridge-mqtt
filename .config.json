@@ -4,12 +4,9 @@
       "name": "homebridge-mqtt",
       "platform": "HomebridgeMQTT",
       "connection": {
-        "host": "home.quangiaso.com",
-        "port": 1883,
         "clientId": "ClientID",
         "username": "username",
-        "password": "password",
-        "api": "http://localhost:8080"
+        "password": "password"
       },
       "home": {
         "id": 1,

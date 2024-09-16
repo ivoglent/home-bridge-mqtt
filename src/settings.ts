@@ -25,6 +25,7 @@ export interface NodeConfig {
     onTopic: string;
     offTopic: string;
     stateTopic: string;
+    state: boolean;
 }
 
 export interface DeviceConfig {
