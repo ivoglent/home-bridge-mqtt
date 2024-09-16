@@ -53,13 +53,13 @@ export class SwitchAccessory {
      * These are sent when the user changes the state of an accessory, for example, turning on a Light bulb.
      */
     async setOn(value: CharacteristicValue) {
-        this.platform.log.debug("setOn mothod called: ", value);
+        this.platform.log.info("setOn method called: ", value);
         if (value) {
             this.mqttClient.publish(this.config.onTopic, "{}");
         } else {
             this.mqttClient.publish(this.config.offTopic, "{}");
         }
-        this.platform.log.debug('Set {} On -> {}', this.config.name, value);
+        this.platform.log.info('Set {} On -> {}', this.config.name, value);
     }
 
     /**
@@ -81,6 +81,7 @@ export class SwitchAccessory {
 
     listenState(): void {
         this.mqttClient.subscribe(this.config.stateTopic, (message: string) => {
+            this.platform.log.info("State of %s changed to: %s", this.config.name, message)
             this.state.On = message == "1";
         })
     }

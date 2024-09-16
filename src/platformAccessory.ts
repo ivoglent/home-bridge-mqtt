@@ -1,6 +1,8 @@
 import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
 import { MqttHomebridgePlatform } from './platform';
+import {NodeConfig} from "./settings";
+import {HandledMqttClient} from "./HandledMqttClient";
 
 /**
  * Platform Accessory
@@ -22,12 +24,15 @@ export class ExamplePlatformAccessory {
   constructor(
     private readonly platform: MqttHomebridgePlatform,
     private readonly accessory: PlatformAccessory,
+    private readonly config: NodeConfig,
+    private readonly mqttClient: HandledMqttClient
   ) {
 
     // set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Default-Manufacturer')
       .setCharacteristic(this.platform.Characteristic.Model, 'Default-Model')
+      .setCharacteristic(this.platform.Characteristic.Name, accessory.displayName)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
 
     // get the LightBulb service if it exists, otherwise create a new LightBulb service

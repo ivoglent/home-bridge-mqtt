@@ -9,8 +9,6 @@ export const PLATFORM_NAME = 'HomebridgeMQTT';
 export const PLUGIN_NAME = 'homebridge-mqtt';
 
 export interface Connection {
-    host: string;
-    port: number;
     clientId: string;
     username: string;
     password: string;

@@ -6,7 +6,7 @@ import {rejects} from "assert";
 export class HandledMqttClient {
     private mqttClient: MqttClient;
     private callbacks: any;
-    constructor(private connection: Connection, public readonly log: Logger) {
+    constructor(private connection: Connection, private address: string, private port: number, public readonly log: Logger) {
         this.callbacks = {};
     }
 
@@ -14,8 +14,8 @@ export class HandledMqttClient {
         this.log.info("Starting MQTT connection....");
         return new Promise<boolean>(((resolve, reject) => {
             this.mqttClient = connect({
-                host: this.connection.host,
-                port: this.connection.port,
+                host: this.address,
+                port: this.port,
                 auth: this.connection.username + ":" + this.connection.password,
                 resubscribe: true,
                 clientId: this.connection.clientId
@@ -26,9 +26,10 @@ export class HandledMqttClient {
             });
 
             this.mqttClient.on("error", (error) => {
-                this.log.error(`MQTT failed to connect to mqtt://${this.connection.host}:${this.connection.port}. error: ${error}, config: ${JSON.stringify(this.connection)}`);
+                this.log.error(`MQTT failed to connect to mqtt://${this.address}:${this.port}. error: ${error}, config: ${JSON.stringify(this.connection)}`);
                 reject(error);
             });
+            this.mqttClient.on('message', this.onMessage);
         }))
 
     }
