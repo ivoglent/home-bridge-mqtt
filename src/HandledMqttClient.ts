@@ -29,7 +29,7 @@ export class HandledMqttClient {
                 this.log.error(`MQTT failed to connect to mqtt://${this.address}:${this.port}. error: ${error}, config: ${JSON.stringify(this.connection)}`);
                 reject(error);
             });
-            this.mqttClient.on('message', this.onMessage);
+            this.mqttClient.on('message', this.onMessage.bind(this));
         }))
 
     }
