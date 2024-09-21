@@ -1,8 +1,8 @@
 {
   "platforms": [
     {
-      "name": "homebridge-mqtt",
-      "platform": "HomebridgeMQTT",
+      "name": "homebridge-custom-mqtt",
+      "platform": "HomebridgeCustomMQTT",
       "connection": {
         "clientId": "ClientID",
         "username": "username",

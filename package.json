@@ -1,7 +1,7 @@
 {
   "private": true,
   "displayName": "HomeBridge MQTT",
-  "name": "homebridge-mqtt",
+  "name": "homebridge-custom-mqtt",
   "version": "1.0.0",
   "description": "Generic solution for mqtt based communication.",
   "license": "Apache-2.0",
