@@ -6,8 +6,10 @@ import {rejects} from "assert";
 export class HandledMqttClient {
     private mqttClient: MqttClient;
     private callbacks: any;
+    _isConnected: boolean;
     constructor(private connection: Connection, private address: string, private port: number, public readonly log: Logger) {
         this.callbacks = {};
+        this._isConnected = false;
     }
 
     start(): Promise<boolean> {
@@ -23,15 +25,27 @@ export class HandledMqttClient {
             this.mqttClient.on("connect", () => {
                 this.log.info("MQTT connected")
                 resolve(true);
+                this._isConnected = true;
             });
 
             this.mqttClient.on("error", (error) => {
                 this.log.error(`MQTT failed to connect to mqtt://${this.address}:${this.port}. error: ${error}, config: ${JSON.stringify(this.connection)}`);
                 reject(error);
+                this._isConnected = false;
             });
+
+            this.mqttClient.on('close',() => {
+                console.log("MQTT connection closed");
+                this._isConnected = false;
+            });
+
             this.mqttClient.on('message', this.onMessage.bind(this));
         }))
 
+    }
+
+    isReady(): boolean {
+        return this._isConnected;
     }
 
     onMessage(topic: string | number, message: any): void {
