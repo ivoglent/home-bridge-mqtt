@@ -1,6 +1,6 @@
 {
-  "pluginAlias": "MqttHomebridgePlugin",
-  "pluginType": "platform",
+  "pluginAlias": "homebridge-custom-mqtt",
+  "pluginType": "HomebridgeCustomMQTT",
   "singular": true,
   "schema": {
     "type": "object",
@@ -9,7 +9,29 @@
         "title": "Name",
         "type": "string",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "default": "homebridge-custom-mqtt"
+      },
+      "connection": {
+        "title": "connection",
+        "type": "object",
+        "required": true,
+        "properties": {
+          "clientId": {
+            "title": "clientId",
+            "type": "string",
+            "required": "true"
+          },
+          "username": {
+            "title": "title",
+            "type": "string",
+            "required": "true"
+          },
+          "password": {
+            "title": "password",
+            "type": "string",
+            "required": "true"
+          }
+        }
       }
     }
   }
